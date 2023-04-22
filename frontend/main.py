@@ -48,7 +48,7 @@ model = RobertaModel.from_pretrained('roberta-base')
 # Load the LDA model and the dictionary
 lda_model = gensim.models.ldamodel.LdaModel.load('lda_topic_detection_model_10.lda')
 dictionary = gensim.corpora.Dictionary.load('lda_topic_detection_model_10.lda.id2word')
-rf_reg = joblib.load("rf_reg_model.pkl")
+rf_reg = joblib.load("models/rf_reg_model.pkl")
 # Define function to get sentiment label from score
 def getSentiment(score):
   if (score < 0 ):
