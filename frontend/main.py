@@ -17,6 +17,7 @@ import joblib
 import plotly.graph_objs as go
 from sidebar import get_user_inputs
 import numpy as np
+import pickle
 
 from display import (
     hide_streamlit_footer,
@@ -27,8 +28,8 @@ from display import (
 )
 
 
-
-label_encoder_day_of_week = joblib.load("label_encoder_day_of_week.pkl")
+pick_read = open("label_encoder_day_of_week.pkl",'rb')
+label_encoder_day_of_week = joblib.load(pick_read)
 label_encoder_language = joblib.load("label_encoder_language.pkl")
 label_encoder_clean_tweet = joblib.load("label_encoder_clean_tweet.pkl")
 label_encoder_sentiment = joblib.load("label_encoder_sentiment.pkl")
