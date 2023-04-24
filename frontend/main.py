@@ -35,12 +35,12 @@ from display import (
 # label_encoder_sentiment = joblib.load("label_encoder_sentiment.pkl")
 # label_encoder_key_words = joblib.load("label_encoder_key_words.pkl")
 
-# Load pre-trained model and tokenizer
-tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
-model = RobertaModel.from_pretrained('roberta-base')
-# Load the LDA model and the dictionary
-lda_model = gensim.models.ldamodel.LdaModel.load('lda_topic_detection_model_10.lda')
-dictionary = gensim.corpora.Dictionary.load('lda_topic_detection_model_10.lda.id2word')
+# # Load pre-trained model and tokenizer
+# tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+# model = RobertaModel.from_pretrained('roberta-base')
+# # Load the LDA model and the dictionary
+# lda_model = gensim.models.ldamodel.LdaModel.load('lda_topic_detection_model_10.lda')
+# dictionary = gensim.corpora.Dictionary.load('lda_topic_detection_model_10.lda.id2word')
 rf_reg = joblib.load("models/rf_reg_model.pkl")
 # Define function to get sentiment label from score
 def getSentiment(score):
