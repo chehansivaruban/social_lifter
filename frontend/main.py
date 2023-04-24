@@ -14,25 +14,17 @@ from gensim.utils import simple_preprocess
 from datetime import datetime
 from sklearn.preprocessing import LabelEncoder
 import joblib
+import plotly.graph_objs as go
+from sidebar import get_user_inputs
+import numpy as np
 
-# Hide the Streamlit tag in the footer
-def hide_streamlit_footer():
-    st.markdown("""
-                <style>
-                .css-cio0dv.egzxvld1{
-                    visibility:hidden;
-                }
-                </style>
-                """,unsafe_allow_html=True)
-    
-# Display page header
-def display_page_header():
-    st.markdown("<h1 style = 'text-align: center;'>Social Lifter</h1>", unsafe_allow_html=True)
-    st.markdown("---")
-
-# Display tweet reach predictor section header
-def display_tweet_reach_predictor_section_header():
-    st.markdown("<h2>Tweet Reach Predictor</h2>", unsafe_allow_html=True)
+from display import (
+    hide_streamlit_footer,
+    display_page_header,
+    style_dataframe,
+    display_dataframe,
+    display_container
+)
 
 
 
@@ -57,7 +49,6 @@ def getSentiment(score):
     return 'neutral'
   else:
     return 'positive'
-
 
 def get_tweet_topic(tweet_text):
     # Clean the tweet text
@@ -135,38 +126,6 @@ def keyword_dataframe(keywords):
         .reset_index(drop=True)
     )
     return df
-def style_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    cmGreen = sns.light_palette("green", as_cmap=True)
-    cmRed = sns.light_palette("red", as_cmap=True)
-    df = df.style.background_gradient(
-        cmap=cmGreen,
-        subset=["Relevancy"],
-    )
-    return df
-# Define the styling functions
-
-def style_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    cmGreen = sns.light_palette("green", as_cmap=True)
-    cmRed = sns.light_palette("red", as_cmap=True)
-    df = df.style.background_gradient(
-        cmap=cmGreen,
-        subset=["Relevancy"],
-    )
-    return df
-
-
-def display_dataframe(df: pd.DataFrame) -> None:
-    c1, c2, c3 = st.columns([1, 3, 1])
-
-    format_dictionary = {
-        "Relevancy": "{:.1%}",
-    }
-
-    df_key = df.format(format_dictionary)
-
-    with c2:
-        st.table(df_key)
-
 
 # Configure Streamlit page
 st.set_page_config(
@@ -177,58 +136,66 @@ st.set_page_config(
 )
 hide_streamlit_footer()
 display_page_header()
-display_tweet_reach_predictor_section_header()
+tab1, tab2, tab3= st.tabs(["Tweet Reach Predictor", "Generate Tweet", "Info"])
 
-# Create form for inputting data
-form = st.form("tweet")
 
-text = form.text_area("Enter your Tweet")
-date = form.date_input("Enter your Date")
-time = form.time_input("Enter your Time")
+with tab1:
+  text, date, time, isTagged, isLocation, isHashtag, isCashtag, followers, following, isVerified, account_age, average_like, btn = get_user_inputs()
+  if btn:
+    display_container()
+    st.markdown("<br>",unsafe_allow_html=True)
+    st.markdown("---")
+    predCol,predCol1, predCol2 = st.columns([5,8, 10])
+    with predCol1:
+        st.markdown("<br>",unsafe_allow_html=True)
+        st.write("Likes")
+    with predCol2:
+        st.metric("Likes", "70", "-1.2", label_visibility="hidden")
+    st.markdown("---")
+    predCol,predCol3, predCol4 = st.columns([5,8, 10])
+    with predCol3:
+        st.markdown("<br>",unsafe_allow_html=True)
+        st.markdown("<br>",unsafe_allow_html=True)
+        st.write("Comments")
+    with predCol4:
+        st.metric("Comments", "70", "-1.2", label_visibility="hidden")
+    st.markdown("---")
+    predCol,predCol5, predCol6 = st.columns([5,8, 10])
+    with predCol5:
+        st.markdown("<br>",unsafe_allow_html=True)
+        st.markdown("<br>",unsafe_allow_html=True)
+        st.write("Retweets")
+    with predCol6:
+        st.metric("Retweets", "70", "-1.2", label_visibility="hidden")
+        isTagged = 1 if isTagged == "True" else 0  
+        isLocation = 1 if isLocation == "True" else 0  
+        isVerified = 1 if isVerified == "True" else 0  
+        isHashtag = 1 if isHashtag == "True" else 0  
+        isCashtag = 1 if isCashtag == "True" else 0  
+        date = date.strftime("%A")
+        time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H')
+        cleaned_text_series = clean_text(text)
+        polarity = get_polarity(cleaned_text_series)
+        subjectivity = get_subjectivity(cleaned_text_series)
+        sentiment = getSentiment(polarity)
+    # print(keywords)
+    extracted_keywords = extract_keywords(text)
+    df_key = keyword_dataframe(extracted_keywords)
+    df_key.index += 1
+    df_key_style =style_dataframe(df_key)
+    display_dataframe(df_key_style)
+    topic = get_tweet_topic(cleaned_text_series)
+    topic_list = get_tweet_topic_list(cleaned_text_series)
+    # Initialize LabelEncoder object
+    label_encoder = LabelEncoder()
 
-isTagged = form.selectbox("Users Tagged ?", options=("True", "False"))
-isLocation = form.selectbox("Location Provided ?", options=("True", "False"))
-isHashtag = form.selectbox("Is Hashtag available ?", options=("True", "False"))
-isCashtag = form.selectbox("Is Cashtag available ?", options=("True", "False"))
-
-followers = form.number_input("Enter No. of Followers")
-following = form.number_input("Enter No. of Following")
-isVerified = form.selectbox("Is your account verified?", options=("Verified", "Not Verified"))
-account_age = form.number_input("How old is your account?")
-average_like = form.number_input("Whats the average likes that you get?")
-
-btn = form.form_submit_button("Predict Reach")
-
-if btn:
-  isTagged = 1 if isTagged == "True" else 0  
-  isLocation = 1 if isLocation == "True" else 0  
-  isVerified = 1 if isVerified == "True" else 0  
-  isHashtag = 1 if isHashtag == "True" else 0  
-  isCashtag = 1 if isCashtag == "True" else 0  
-  date = date.strftime("%A")
-  time = datetime.strptime(str(time), '%H:%M:%S').strftime('%H')
-  cleaned_text_series = clean_text(text)
-  polarity = get_polarity(cleaned_text_series)
-  subjectivity = get_subjectivity(cleaned_text_series)
-  sentiment = getSentiment(polarity)
-  # print(keywords)
-  extracted_keywords = extract_keywords(text)
-  df = keyword_dataframe(extracted_keywords)
-  df.index += 1
-  df =style_dataframe(df)
-  display_dataframe(df)
-  topic = get_tweet_topic(cleaned_text_series)
-  topic_list = get_tweet_topic_list(cleaned_text_series)
-  # Initialize LabelEncoder object
-  label_encoder = LabelEncoder()
-
-  # Convert categorical features to numerical values
-  day_of_week_encoded = label_encoder.fit_transform([date])
-  language_encoded = label_encoder.fit_transform(["English"])
-  clean_tweet_encoded = label_encoder.fit_transform([cleaned_text_series])
-  sentiment_encoded = label_encoder.fit_transform([sentiment])
-  key_words_encoded = label_encoder.fit_transform([topic_list])
-  inputs = pd.DataFrame({
+      # Convert categorical features to numerical values
+    day_of_week_encoded = label_encoder.fit_transform([date])
+    language_encoded = label_encoder.fit_transform(["English"])
+    clean_tweet_encoded = label_encoder.fit_transform([cleaned_text_series])
+    sentiment_encoded = label_encoder.fit_transform([sentiment])
+    key_words_encoded = label_encoder.fit_transform([topic_list])
+    inputs = pd.DataFrame({
     "time": [time],  # add missing value
     "Day of week": [day_of_week_encoded[0]],
     "Cashtags": [isCashtag],  # add missing value
@@ -247,12 +214,67 @@ if btn:
     "sentiment": [sentiment_encoded[0]],
     "topics": [topic],  # add missing value
     "key_words": [key_words_encoded[0]]
-})
+    })
 
-  df = pd.DataFrame(inputs)
-  
-  prediction = rf_reg.predict(df)
-  st.write(prediction)
+    df = pd.DataFrame(inputs)
+
+    prediction = rf_reg.predict(df)
+    likes = prediction[0][0]
+    comments = prediction[0][1]
+    retweets = prediction[0][2]
+    
+    
+    
+
+    st.write(prediction)
+    # Create a bar chart using Plotly
+    fig = go.Figure(
+    data=[go.Bar(x=df_key['Keyword/Keyphrase'], y=df_key['Relevancy'])])
+    fig.update_layout(
+                    title = dict(text = 'Keywords'),
+                    xaxis_title="Keyword/Keyphras",
+                    yaxis_title="Relevancy"
+                )
+    # Display the chart in Streamlit
+    st.plotly_chart(fig)
+    st.write(likes)
+    st.write(comments)
+    st.write(retweets)
+  else: 
+    st.markdown("---")
+    st.markdown("<h1>Get your Tweet predictions</h1>", unsafe_allow_html=True)
+    st.markdown("---")
+    # generate random data
+    x = np.linspace(0, 10, 100)
+    y1 = np.random.rand(100) + x
+    y2 = np.random.rand(100) + 1+x
+    y3 = np.random.rand(100) * x
+
+    # create plotly figure with three traces
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=y1, mode='lines', name='Likes', line=dict(color='red')))
+    fig.add_trace(go.Scatter(x=x, y=y2, mode='lines', name='Comments', line=dict(color='green')))
+    fig.add_trace(go.Scatter(x=x, y=y3, mode='lines', name='Retweets', line=dict(color='blue')))
+
+    # set layout properties
+    fig.update_layout(title='Tweet Reach', xaxis_title='days', yaxis_title='reach', template='plotly_dark')
+
+    # display plotly chart in streamlit app
+    st.plotly_chart(fig)
+    
+    
+    
+css = '''
+<style>
+    .stTabs [data-baseweb="tab-list"] button [data-testid="stMarkdownContainer"] p {
+    font-size:1.5rem;
+    margin-right: 100px;
+    position: relative;
+    margin-left: 15px;
+    }
+</style>
+'''
+st.markdown(css, unsafe_allow_html=True)
 
 
 
