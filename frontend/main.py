@@ -28,12 +28,12 @@ from display import (
 )
 
 
-# pick_read = open("EDP/label_encoder_day_of_week.pkl",'rb')
+# pick_read = open("label_encoder_day_of_week.pkl",'rb')
 # label_encoder_day_of_week = joblib.load(pick_read)
-label_encoder_language = joblib.load("EDP/label_encoder_language.pkl")
-label_encoder_clean_tweet = joblib.load("EDP/label_encoder_clean_tweet.pkl")
-label_encoder_sentiment = joblib.load("EDP/label_encoder_sentiment.pkl")
-label_encoder_key_words = joblib.load("EDP/label_encoder_key_words.pkl")
+# label_encoder_language = joblib.load("label_encoder_language.pkl")
+# label_encoder_clean_tweet = joblib.load("label_encoder_clean_tweet.pkl")
+# label_encoder_sentiment = joblib.load("label_encoder_sentiment.pkl")
+# label_encoder_key_words = joblib.load("label_encoder_key_words.pkl")
 
 # Load pre-trained model and tokenizer
 tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
