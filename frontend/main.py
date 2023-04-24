@@ -28,7 +28,7 @@ from display import (
 )
 
 
-pick_read = open("label_encoder_day_of_week.pkl",'rb')
+pick_read = open("my_data_apple.csv",'rb')
 label_encoder_day_of_week = joblib.load("label_encoder_day_of_week.pkl")
 label_encoder_language = joblib.load("label_encoder_language.pkl")
 label_encoder_clean_tweet = joblib.load("label_encoder_clean_tweet.pkl")
