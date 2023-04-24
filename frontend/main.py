@@ -28,8 +28,8 @@ from display import (
 )
 
 
-pick_read = open("EDP/label_encoder_day_of_week.pkl",'rb')
-label_encoder_day_of_week = joblib.load(pick_read)
+# pick_read = open("EDP/label_encoder_day_of_week.pkl",'rb')
+# label_encoder_day_of_week = joblib.load(pick_read)
 label_encoder_language = joblib.load("EDP/label_encoder_language.pkl")
 label_encoder_clean_tweet = joblib.load("EDP/label_encoder_clean_tweet.pkl")
 label_encoder_sentiment = joblib.load("EDP/label_encoder_sentiment.pkl")
