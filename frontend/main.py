@@ -1,8 +1,6 @@
 import streamlit as st
 import plotly.graph_objs as go
 from sidebar import get_user_inputs
-import numpy as np
-import tensorflow as tf
 
 
 from display import (
@@ -13,9 +11,7 @@ from display import (
     display_container
 )
 
-from encoders import (
-    load_label_encoders
-)
+
 from info import (
     create_twitter_marketing_plan
 )
@@ -45,6 +41,9 @@ from text_processing import (
 from embed_tweet import (
     get_embedded_tweet
 )
+from tweet_analyzer import (
+    display_analyze
+)
 
 # Configure Streamlit page
 st.set_page_config(
@@ -53,9 +52,42 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="expanded",
 )
+st.markdown("""
+    <style>
+        
+
+        .stButton button {
+            background-color: #1DA1F2;
+            color: white;
+            border-radius: 5px;
+            padding: 0.5em 1em;
+        }
+
+        .stTextInput input {
+            border: 2px solid #1DA1F2;
+            border-radius: 5px;
+            padding: 0.5em;
+        }
+
+        .stSelectbox select {
+            background-color: #f5f5f5;
+            border: 2px solid #1DA1F2;
+            border-radius: 5px;
+            padding: 0.5em;
+            color: #1DA1F2;
+            font-weight: bold;
+        }
+
+        .stGraph {
+            height: 500px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 hide_streamlit_footer()
 display_page_header()
-tab1, tab2, tab3= st.tabs(["Tweet Reach Predictor", "Generate Tweet", "Info"])
+tab1, tab2, tab3, tab4= st.tabs(["Tweet Reach Predictor","Analyze Account", "Generate Tweet", "Info"])
 
 with tab1:
   text, date, time, isTagged, isLocation, isHashtag, isCashtag, followers, following, isVerified, account_age, average_like, btn = get_user_inputs()
@@ -133,8 +165,8 @@ with tab1:
 css = '''
 <style>
     .stTabs [data-baseweb="tab-list"] button [data-testid="stMarkdownContainer"] p {
-    font-size:1.5rem;
-    margin-right: 100px;
+    font-size:1rem;
+    margin-right: 50;
     position: relative;
     margin-left: 15px;
     }
@@ -143,15 +175,21 @@ css = '''
 st.markdown(css, unsafe_allow_html=True)
 
 with tab2:
-    get_embedded_tweet()
+    display_analyze()
+    
+
+            
+   
 
 
 # ------------------------info tab ------------------
 
-with tab3:
+with tab4:
     create_twitter_marketing_plan()
     
 
 
+with tab3:
+    get_embedded_tweet()
 
 
