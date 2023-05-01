@@ -1,2 +1,0 @@
-*.psd filter=lfs diff=lfs merge=lfs -text
-lda_model.expElogbeta.npy filter=lfs diff=lfs merge=lfs -text
