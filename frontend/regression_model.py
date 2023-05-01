@@ -20,6 +20,7 @@ def get_dt_pred(date, time, isTagged, isLocation, isHashtag, isCashtag, follower
     # Define the mapping from sentiment string to integer
     sentiment_map = {'positive': 0, 'negative': 1, 'neutral': 2}
     sentiment_encoded = sentiment_map[sentiment]
+    Followers_to_Following = followers / following
     inputs = pd.DataFrame({
     "time": [time],  # add missing value
     "Day of week": [day_of_week_encoded],
@@ -36,6 +37,7 @@ def get_dt_pred(date, time, isTagged, isLocation, isHashtag, isCashtag, follower
     "polarity": [polarity],
     "sentiment": [sentiment_encoded],
     "topics": [topic],  # add missing value
+    "Followers_to_Following": [Followers_to_Following.round(2)],  # add missing value
     })
 
     df = pd.DataFrame(inputs)
