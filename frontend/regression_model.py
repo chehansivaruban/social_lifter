@@ -4,7 +4,9 @@ from datetime import datetime
 import pandas as pd
 
 
-dt_reg = joblib.load("models\dt\dt_reg_likes.pkl")
+dt_reg_likes = joblib.load("models/final_model/dt/dt_reg_likes_best_30_04_01.pkl")
+dt_reg_comments = joblib.load("models/final_model/dt/dt_reg_comments_best30_04_01.pkl")
+dt_reg_retweets = joblib.load("models/final_model/dt/dt_reg_retweets_best_30_04_01.pkl")
 
 def get_dt_pred(date, time, isTagged, isLocation, isHashtag, isCashtag, followers, following, isVerified, account_age, average_like,subjectivity,polarity,sentiment,topic):
     isTagged = 1 if isTagged == "True" else 0  
@@ -38,7 +40,9 @@ def get_dt_pred(date, time, isTagged, isLocation, isHashtag, isCashtag, follower
     })
 
     df = pd.DataFrame(inputs)
-    prediction = dt_reg.predict(df)
-    return prediction
+    prediction_likes = dt_reg_likes.predict(df)
+    prediction_comments = dt_reg_comments.predict(df)
+    prediction_retweets = dt_reg_retweets.predict(df)
+    return prediction_likes, prediction_comments, prediction_retweets
     
     

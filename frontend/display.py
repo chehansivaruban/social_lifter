@@ -44,7 +44,7 @@ def display_dataframe(df: pd.DataFrame) -> None:
     with c2:
         st.table(df_key)
 
-def display_container(text,likes):
+def display_container(text,likes,comments,retweets):
   text = text.replace('\n', ' ')
   st.markdown(f"""
     <style>
@@ -124,8 +124,8 @@ def display_container(text,likes):
         <p class="tweet-text">{text}</p>
         <div class="tweet-metrics">
           <span class="metric">{likes} likes &#x2764;</span>
-          <span class="metric">50 comments &#x1F4AC;</span>
-          <span class="metric">20 retweets &#x1F501;&#xFE0E;</span>
+          <span class="metric">{comments} comments &#x1F4AC;</span>
+          <span class="metric">{retweets} retweets &#x1F501;&#xFE0E;</span>
         </div>
       </div>
     </div>
