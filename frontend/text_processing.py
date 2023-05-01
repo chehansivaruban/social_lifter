@@ -2,7 +2,6 @@ import string
 from keras.utils.data_utils import pad_sequences
 import re
 import pickle
-from gensim.utils import simple_preprocess
 
 
 with open('models/emotion/tokenizer.pickle', 'rb') as handle:
